@@ -22,16 +22,36 @@ let fps = 30;
 let animationId = null;
 let previousDelta = 0;
 let isGridShown = true;
+let isControlPressed = false;
+let isShiftPressed = false;
 
-// Start / Pause
-const playButton = document.getElementById("btn-play");
-const stepButton = document.getElementById("btn-step");
-const randomButton = document.getElementById("btn-random");
-const clearButton = document.getElementById("btn-clear");
-const gridButton = document.getElementById("btn-grid");
-const fpsInput = document.getElementById("input-fps");
+// Helpers
+const toggleGrid = () => {
+  if (isGridShown) {
+    gridButton.textContent = "Show Grid";
+    drawGrid(colors["monochrome900"]);
+    isGridShown = false;
+  } else {
+    gridButton.textContent = "Hide Grid";
+    drawGrid();
+    isGridShown = true;
+  }
+};
 
-// Buttons
+const togglePlay = () => {
+  if (isPaused()) {
+    play();
+  } else {
+    pause();
+  }
+};
+
+const stepForward = () => {
+  pause();
+  universe.tick();
+  drawCells();
+};
+
 const isPaused = () => {
   return animationId === null;
 };
@@ -49,19 +69,16 @@ const pause = () => {
   animationId = null;
 };
 
-playButton.addEventListener("click", (_) => {
-  if (isPaused()) {
-    play();
-  } else {
-    pause();
-  }
-});
+// Controls
+const playButton = document.getElementById("btn-play");
+const stepButton = document.getElementById("btn-step");
+const randomButton = document.getElementById("btn-random");
+const clearButton = document.getElementById("btn-clear");
+const gridButton = document.getElementById("btn-grid");
+const fpsInput = document.getElementById("input-fps");
 
-stepButton.addEventListener("click", (_) => {
-  pause();
-  universe.tick();
-  drawCells();
-});
+playButton.addEventListener("click", togglePlay);
+stepButton.addEventListener("click", stepForward);
 
 randomButton.addEventListener("click", (_) => {
   pause();
@@ -129,18 +146,6 @@ const drawGrid = (color = GRID_COLOR) => {
   ctx.stroke();
 };
 
-const toggleGrid = () => {
-  if (isGridShown) {
-    gridButton.textContent = "Show Grid";
-    drawGrid(colors["monochrome900"]);
-    isGridShown = false;
-  } else {
-    gridButton.textContent = "Hide Grid";
-    drawGrid();
-    isGridShown = true;
-  }
-};
-
 const getIndex = (row, column) => {
   return row * width + column;
 };
@@ -176,7 +181,7 @@ const drawCells = () => {
 };
 
 // Drawing cell patterns
-canvas.addEventListener("mousedown", (event) => {
+canvas.addEventListener("click", (event) => {
   const boundingRect = canvas.getBoundingClientRect();
 
   const scaleX = canvas.width / boundingRect.width;
@@ -188,29 +193,53 @@ canvas.addEventListener("mousedown", (event) => {
   const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
   const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
 
-  // Left Mouse Button
-  if (event.button === 0) {
-    universe.toggle_cell(row, col);
-  }
-
-  // Middle Mouse Button
-  if (event.button === 1) {
-    universe.add_pulsar(row, col);
-  }
-
-  // Right Mouse Button
-  if (event.button === 2) {
+  if (isControlPressed) {
     universe.add_glider(row, col);
+  } else if (isShiftPressed) {
+    universe.add_pulsar(row, col);
+  } else {
+    universe.toggle_cell(row, col);
   }
 
   drawCells();
 });
 
-canvas.addEventListener("contextmenu", (event) => {
+document.addEventListener("keydown", (event) => {
   event.preventDefault();
+  // console.log(event);
+
+  if (event.code === "Space") {
+    togglePlay();
+  }
+
+  if (event.key === "ArrowRight") {
+    stepForward();
+  }
+
+  if (event.key === "Control") {
+    isControlPressed = true;
+  }
+
+  if (event.key === "Shift") {
+    isShiftPressed = true;
+  }
+});
+
+document.addEventListener("keyup", (event) => {
+  console.log(event);
+
+  if (event.key === "Control") {
+    isControlPressed = false;
+  }
+
+  if (event.key === "Shift") {
+    isShiftPressed = false;
+  }
 });
 
 // initial render
+universe.add_glider(5, 5);
+universe.add_pulsar(40, 40);
 drawGrid();
 drawCells();
 
