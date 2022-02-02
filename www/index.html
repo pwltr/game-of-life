@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>WASM: A Conway's Game of Life</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <noscript
+      >This page contains webassembly and javascript content, please enable
+      javascript in your browser.</noscript
+    >
+
+    <div class="container">
+      <div class="canvas">
+        <canvas id="canvas"></canvas>
+        <div id="fps-counter"></div>
+      </div>
+      <div class="controls">
+        <div class="controls-section">
+          <div class="controls-title">Controls</div>
+          <div class="controls-row">
+            <button id="btn-play" class="button button--primary">▶ Run</button>
+          </div>
+          <div class="controls-row">
+            <button id="btn-step" class="button">Next Step</button>
+          </div>
+          <div class="controls-row">
+            <input
+              class="input input-speed"
+              type="range"
+              id="input-fps"
+              name="input-fps"
+              min="0.5"
+              max="60"
+            />
+            <label for="input-fps">Speed</label>
+          </div>
+        </div>
+
+        <div class="controls-section">
+          <div class="controls-title">Board</div>
+          <div class="controls-row">
+            <button id="btn-random" class="button">Create Random</button>
+            <button id="btn-clear" class="button">Clear Board</button>
+          </div>
+          <!-- <div class="controls-row">
+            <div class="input-group">
+              <label for="input-width">Width</label>
+              <input
+                id="input-width"
+                type="number"
+                name="input-width"
+                class="input"
+                value="64"
+                max="100"
+              />
+            </div>
+            X
+            <div class="input-group">
+              <label for="input-height">Height</label>
+              <input
+                id="input-height"
+                type="number"
+                name="input-height"
+                class="input"
+                value="64"
+                max="100"
+              />
+            </div>
+
+            <button id="btn-board" class="button">Set</button>
+          </div> -->
+          <div class="controls-row">
+            <button id="btn-grid" class="button">Hide Grid</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./bootstrap.js"></script>
+  </body>
+</html>
