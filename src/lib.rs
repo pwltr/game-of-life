@@ -112,6 +112,10 @@ impl Universe {
                 let cell = self.cells[idx];
                 let live_neighbors = self.live_neighbor_count(row, col);
 
+                // if cell {
+                //     log!("found live cell at [{}, {}]", row, col);
+                // }
+
                 // log!(
                 //     "cell[{}, {}] has {} live neighbors and is {:?}",
                 //     row,
@@ -134,9 +138,6 @@ impl Universe {
             }
         }
 
-        // log!("current cells: `{:?}`", self.cells);
-        // log!("next cells: `{:?}`", next);
-
         self.cells = next;
     }
 
@@ -147,11 +148,11 @@ impl Universe {
 
     pub fn add_glider(&mut self, row: u32, column: u32) {
         let pattern = &[
-            (row, column),
-            ((row + 2) % self.height, column),
+            ((row - 1) % self.height, (column - 1) % self.width),
+            ((row) % self.height, (column + 1) % self.height),
+            ((row + 1) % self.height, (column - 1) % self.width),
+            ((row + 1) % self.height, (column) % self.width),
             ((row + 1) % self.height, (column + 1) % self.width),
-            ((row + 1) % self.height, (column + 2) % self.width),
-            ((row + 2) % self.height, (column + 1) % self.width),
         ];
 
         for (row, col) in pattern.iter().cloned() {
@@ -162,54 +163,62 @@ impl Universe {
 
     pub fn add_pulsar(&mut self, row: u32, column: u32) {
         let pattern = &[
-            ((row) % self.height, (column + 2) % self.width),
-            ((row) % self.height, (column + 3) % self.width),
-            ((row) % self.height, (column + 4) % self.width),
-            ((row) % self.height, (column + 8) % self.width),
-            ((row) % self.height, (column + 9) % self.width),
-            ((row) % self.height, (column + 10) % self.width),
-            ((row + 2) % self.height, (column) % self.width),
+            ((row - 7) % self.height, (column + 3) % self.width),
+            ((row - 7) % self.height, (column - 3) % self.width),
+            ((row - 6) % self.height, (column - 3) % self.width),
+            ((row - 6) % self.height, (column + 3) % self.width),
+            ((row - 5) % self.height, (column - 3) % self.width),
+            ((row - 5) % self.height, (column - 2) % self.width),
+            ((row - 5) % self.height, (column + 2) % self.width),
+            ((row - 5) % self.height, (column + 3) % self.width),
+            ((row - 3) % self.height, (column - 7) % self.width),
+            ((row - 3) % self.height, (column - 6) % self.width),
+            ((row - 3) % self.height, (column - 5) % self.width),
+            ((row - 3) % self.height, (column - 2) % self.width),
+            ((row - 3) % self.height, (column - 1) % self.width),
+            ((row - 3) % self.height, (column + 1) % self.width),
+            ((row - 3) % self.height, (column + 2) % self.width),
+            ((row - 3) % self.height, (column + 5) % self.width),
+            ((row - 3) % self.height, (column + 6) % self.width),
+            ((row - 3) % self.height, (column + 7) % self.width),
+            ((row - 2) % self.height, (column - 5) % self.width),
+            ((row - 2) % self.height, (column - 3) % self.width),
+            ((row - 2) % self.height, (column - 1) % self.width),
+            ((row - 2) % self.height, (column + 1) % self.width),
+            ((row - 2) % self.height, (column + 3) % self.width),
+            ((row - 2) % self.height, (column + 5) % self.width),
+            ((row - 1) % self.height, (column - 3) % self.width),
+            ((row - 1) % self.height, (column - 2) % self.width),
+            ((row - 1) % self.height, (column + 2) % self.width),
+            ((row - 1) % self.height, (column + 3) % self.width),
+            ((row + 1) % self.height, (column - 3) % self.width),
+            ((row + 1) % self.height, (column - 2) % self.width),
+            ((row + 1) % self.height, (column + 2) % self.width),
+            ((row + 1) % self.height, (column + 3) % self.width),
+            ((row + 2) % self.height, (column - 5) % self.width),
+            ((row + 2) % self.height, (column - 3) % self.width),
+            ((row + 2) % self.height, (column - 1) % self.width),
+            ((row + 2) % self.height, (column + 1) % self.width),
+            ((row + 2) % self.height, (column + 3) % self.width),
             ((row + 2) % self.height, (column + 5) % self.width),
-            ((row + 2) % self.height, (column + 7) % self.width),
-            ((row + 2) % self.height, (column + 12) % self.width),
-            ((row + 3) % self.height, (column) % self.width),
+            ((row + 3) % self.height, (column - 7) % self.width),
+            ((row + 3) % self.height, (column - 6) % self.width),
+            ((row + 3) % self.height, (column - 5) % self.width),
+            ((row + 3) % self.height, (column - 2) % self.width),
+            ((row + 3) % self.height, (column - 1) % self.width),
+            ((row + 3) % self.height, (column + 1) % self.width),
+            ((row + 3) % self.height, (column + 2) % self.width),
             ((row + 3) % self.height, (column + 5) % self.width),
+            ((row + 3) % self.height, (column + 6) % self.width),
             ((row + 3) % self.height, (column + 7) % self.width),
-            ((row + 3) % self.height, (column + 12) % self.width),
-            ((row + 4) % self.height, (column) % self.width),
-            ((row + 4) % self.height, (column + 5) % self.width),
-            ((row + 4) % self.height, (column + 7) % self.width),
-            ((row + 4) % self.height, (column + 12) % self.width),
+            ((row + 5) % self.height, (column - 3) % self.width),
+            ((row + 5) % self.height, (column - 2) % self.width),
             ((row + 5) % self.height, (column + 2) % self.width),
             ((row + 5) % self.height, (column + 3) % self.width),
-            ((row + 5) % self.height, (column + 4) % self.width),
-            ((row + 5) % self.height, (column + 8) % self.width),
-            ((row + 5) % self.height, (column + 9) % self.width),
-            ((row + 5) % self.height, (column + 10) % self.width),
-            ((row + 7) % self.height, (column + 2) % self.width),
+            ((row + 6) % self.height, (column - 3) % self.width),
+            ((row + 6) % self.height, (column + 3) % self.width),
+            ((row + 7) % self.height, (column - 3) % self.width),
             ((row + 7) % self.height, (column + 3) % self.width),
-            ((row + 7) % self.height, (column + 4) % self.width),
-            ((row + 7) % self.height, (column + 8) % self.width),
-            ((row + 7) % self.height, (column + 9) % self.width),
-            ((row + 7) % self.height, (column + 10) % self.width),
-            ((row + 8) % self.height, (column) % self.width),
-            ((row + 8) % self.height, (column + 5) % self.width),
-            ((row + 8) % self.height, (column + 7) % self.width),
-            ((row + 8) % self.height, (column + 12) % self.width),
-            ((row + 9) % self.height, (column) % self.width),
-            ((row + 9) % self.height, (column + 5) % self.width),
-            ((row + 9) % self.height, (column + 7) % self.width),
-            ((row + 9) % self.height, (column + 12) % self.width),
-            ((row + 10) % self.height, (column) % self.width),
-            ((row + 10) % self.height, (column + 5) % self.width),
-            ((row + 10) % self.height, (column + 7) % self.width),
-            ((row + 10) % self.height, (column + 12) % self.width),
-            ((row + 12) % self.height, (column + 2) % self.width),
-            ((row + 12) % self.height, (column + 3) % self.width),
-            ((row + 12) % self.height, (column + 4) % self.width),
-            ((row + 12) % self.height, (column + 8) % self.width),
-            ((row + 12) % self.height, (column + 9) % self.width),
-            ((row + 12) % self.height, (column + 10) % self.width),
         ];
 
         for (row, col) in pattern.iter().cloned() {
