@@ -7,13 +7,16 @@ const documentStyle = getComputedStyle(document.documentElement);
 const colors = {
   success: documentStyle.getPropertyValue("--success"),
   warning: documentStyle.getPropertyValue("--warning"),
+  monochrome100: documentStyle.getPropertyValue("--monochrome-100"),
+  monochrome700: documentStyle.getPropertyValue("--monochrome-700"),
   monochrome900: documentStyle.getPropertyValue("--monochrome-900"),
+  white: documentStyle.getPropertyValue("--white"),
 };
 
 const CELL_SIZE = 8;
-const GRID_COLOR = "#999999";
-const DEAD_COLOR = "#000000";
-const ALIVE_COLOR = "#FFFFFF";
+const GRID_COLOR = colors.monochrome700;
+const DEAD_COLOR = colors.monochrome900;
+const ALIVE_COLOR = colors.white;
 
 // Settings
 let width = 64;
@@ -29,7 +32,7 @@ let isShiftPressed = false;
 const toggleGrid = () => {
   if (isGridShown) {
     gridButton.textContent = "Show Grid";
-    drawGrid(colors["monochrome900"]);
+    clearGrid();
     isGridShown = false;
   } else {
     gridButton.textContent = "Hide Grid";
@@ -76,6 +79,8 @@ const randomButton = document.getElementById("btn-random");
 const clearButton = document.getElementById("btn-clear");
 const gridButton = document.getElementById("btn-grid");
 const fpsInput = document.getElementById("input-fps");
+const saveButton = document.getElementById("btn-save");
+const loadButton = document.getElementById("btn-load");
 
 playButton.addEventListener("click", togglePlay);
 stepButton.addEventListener("click", stepForward);
@@ -98,6 +103,25 @@ gridButton.addEventListener("click", (_) => {
 
 fpsInput.addEventListener("change", (event) => {
   fps = event.target.value;
+});
+
+saveButton.addEventListener("click", (_) => {
+  const cellsPtr = universe.cells();
+  const cells = new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8);
+  pause();
+  localStorage.setItem("save", JSON.stringify(cells));
+  loadButton.disabled = false;
+});
+
+loadButton.addEventListener("click", (_) => {
+  const cellsPtr = universe.cells();
+  const cells = JSON.parse(localStorage.getItem("save"));
+  Object.keys(cells).forEach((cell) => {
+    new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8)[cell] =
+      cells[cell];
+  });
+  pause();
+  drawCells(cells);
 });
 
 // Construct the universe, and get its width and height.
@@ -127,23 +151,28 @@ const renderLoop = (currentDelta) => {
   previousDelta = currentDelta;
 };
 
-const drawGrid = (color = GRID_COLOR) => {
+const drawGrid = () => {
   ctx.beginPath();
-  ctx.strokeStyle = color;
+  ctx.strokeStyle = GRID_COLOR;
 
   // Vertical lines.
   for (let i = 0; i <= width; i++) {
-    ctx.moveTo(i * (CELL_SIZE + 1) + 1, 0);
-    ctx.lineTo(i * (CELL_SIZE + 1) + 1, (CELL_SIZE + 1) * height + 1);
+    ctx.moveTo(i * (CELL_SIZE + 1) + 0.5, 0);
+    ctx.lineTo(i * (CELL_SIZE + 1) + 0.5, (CELL_SIZE + 1) * height + 1);
   }
 
   // Horizontal lines.
   for (let j = 0; j <= height; j++) {
-    ctx.moveTo(0, j * (CELL_SIZE + 1) + 1);
-    ctx.lineTo((CELL_SIZE + 1) * width + 1, j * (CELL_SIZE + 1) + 1);
+    ctx.moveTo(0, j * (CELL_SIZE + 1) + 0.5);
+    ctx.lineTo((CELL_SIZE + 1) * width + 1, j * (CELL_SIZE + 1) + 0.5);
   }
 
   ctx.stroke();
+};
+
+const clearGrid = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawCells();
 };
 
 const getIndex = (row, column) => {
@@ -156,9 +185,11 @@ const bitIsSet = (n, arr) => {
   return (arr[byte] & mask) === mask;
 };
 
-const drawCells = () => {
+const drawCells = (savedCells) => {
   const cellsPtr = universe.cells();
-  const cells = new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8);
+  const cells = savedCells
+    ? savedCells
+    : new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8);
 
   ctx.beginPath();
 
@@ -205,10 +236,8 @@ canvas.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  event.preventDefault();
-  // console.log(event);
-
   if (event.code === "Space") {
+    event.preventDefault();
     togglePlay();
   }
 
@@ -226,8 +255,6 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keyup", (event) => {
-  console.log(event);
-
   if (event.key === "Control") {
     isControlPressed = false;
   }
@@ -236,6 +263,10 @@ document.addEventListener("keyup", (event) => {
     isShiftPressed = false;
   }
 });
+
+if (localStorage.getItem("save")) {
+  loadButton.disabled = false;
+}
 
 // initial render
 universe.add_glider(5, 5);
