@@ -1,8 +1,10 @@
 <div align="center">
 
-  <h1><code>wasm-pack-template</code></h1>
+  <h1><code>WASM: A Conway's Game of Life</code></h1>
 
-  <strong>A template for kick starting a Rust and WebAssembly project using <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a>.</strong>
+  <strong>A WebAssembly project using <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a>.</strong>
+  
+  ![Screenshot_20220203_012549](https://user-images.githubusercontent.com/8538369/152260472-e4a5cd90-8b9d-484e-aa16-ea479e9ef2dc.png)
 
   <p>
     <a href="https://travis-ci.org/rustwasm/wasm-pack-template"><img src="https://img.shields.io/travis/rustwasm/wasm-pack-template.svg?style=flat-square" alt="Build Status" /></a>
