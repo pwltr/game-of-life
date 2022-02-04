@@ -1,4 +1,4 @@
-import { Universe, Cell } from "wasm-game-of-life";
+import { Universe } from "wasm-game-of-life";
 // Import the WebAssembly memory
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
@@ -23,6 +23,7 @@ const ALIVE_COLOR = colors.white;
 
 const width = 64;
 const height = 64;
+
 let fps = 30;
 let animationId = null;
 let previousDelta = 0;
@@ -214,11 +215,32 @@ const drawCells = (savedCells) => {
 
   ctx.beginPath();
 
+  // Alive cells.
+  ctx.fillStyle = ALIVE_COLOR;
   for (let row = 0; row < height; row++) {
     for (let col = 0; col < width; col++) {
       const idx = getIndex(row, col);
+      if (!bitIsSet(idx, cells)) {
+        continue;
+      }
 
-      ctx.fillStyle = bitIsSet(idx, cells) ? ALIVE_COLOR : DEAD_COLOR;
+      ctx.fillRect(
+        col * (CELL_SIZE + 1) + 1,
+        row * (CELL_SIZE + 1) + 1,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+    }
+  }
+
+  // Dead cells.
+  ctx.fillStyle = DEAD_COLOR;
+  for (let row = 0; row < height; row++) {
+    for (let col = 0; col < width; col++) {
+      const idx = getIndex(row, col);
+      if (bitIsSet(idx, cells)) {
+        continue;
+      }
 
       ctx.fillRect(
         col * (CELL_SIZE + 1) + 1,
