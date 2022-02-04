@@ -1,6 +1,6 @@
 :root {
   --success: #00f2a9;
-  --warning: #f29d00;
+  --warning: hsl(39deg 100% 47% / 89%);
   --white: #ffffff;
   --black: #000000;
   --monochrome-100: #efefef;
@@ -36,12 +36,18 @@ body {
   background: var(--monochrome-100);
   display: flex;
   flex-direction: column;
-  row-gap: 2rem;
-  padding: 2rem 1.8rem;
-  width: 400px;
+  row-gap: 2.5rem;
+  width: 440px;
+  padding: 2rem 0;
 }
 
-/* .controls-section {} */
+.controls-section {
+  padding: 0 1.8rem;
+}
+
+/* .controls-section:not(:last-child) {
+  border-bottom: 1px solid #0c0c0c;
+} */
 
 .controls .button {
   font-size: 1.2rem;

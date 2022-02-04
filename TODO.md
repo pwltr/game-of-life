@@ -7,11 +7,12 @@
 - [ ] split codebase into modules
 - [ ] add performance checks
 - [ ] write more tests
-- [ ] Board size
 - [ ] Shortcut tooltip
-- [ ] FPS counter toggle
+- [ ] "What's this?"
 - [ ] Stopwatch / Personal record / Gamify
 - [ ] Toasts / notifcations
+- [ ] FPS counter toggle
+- [ ] Board size
 - [ ] Presets
 
 ### Bugs
