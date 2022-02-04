@@ -68,11 +68,17 @@ body {
 
 .button {
   background: var(--white);
+  box-shadow: 1px 1px #686868;
   border-radius: 3px;
   cursor: pointer;
   line-height: 1.2;
   min-width: 120px;
   padding: 0.2rem 1rem;
+  transition: box-shadow 0.05s;
+}
+
+.button:active {
+  box-shadow: none;
 }
 
 .button--primary {

@@ -51,6 +51,7 @@ const toggleFps = () => {
     fpsCounter.style.display = "none";
     isFpsShown = false;
   } else {
+    framesGraph.render();
     fpsButton.textContent = "Hide FPS";
     fpsCounter.style.display = "block";
     isFpsShown = true;
@@ -71,7 +72,21 @@ const stepForward = () => {
   drawCells();
 };
 
-const loadSaveState = () => {
+const clearBoard = () => {
+  pause();
+  universe.clear();
+  drawCells();
+};
+
+const saveBoard = () => {
+  const cellsPtr = universe.cells();
+  const cells = new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8);
+  pause();
+  localStorage.setItem("save", JSON.stringify(cells));
+  loadButton.disabled = false;
+};
+
+const loadBoard = () => {
   const cellsPtr = universe.cells();
   const cells = JSON.parse(localStorage.getItem("save"));
   Object.keys(cells).forEach((cell) => {
@@ -121,28 +136,15 @@ randomButton.addEventListener("click", (_) => {
   drawCells();
 });
 
-clearButton.addEventListener("click", (_) => {
-  pause();
-  universe.clear();
-  drawCells();
-});
-
 gridButton.addEventListener("click", toggleGrid);
+clearButton.addEventListener("click", clearBoard);
+saveButton.addEventListener("click", saveBoard);
+loadButton.addEventListener("click", loadBoard);
 fpsButton.addEventListener("click", toggleFps);
 
 fpsInput.addEventListener("change", (event) => {
   fps = event.target.value;
 });
-
-saveButton.addEventListener("click", (_) => {
-  const cellsPtr = universe.cells();
-  const cells = new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8);
-  pause();
-  localStorage.setItem("save", JSON.stringify(cells));
-  loadButton.disabled = false;
-});
-
-loadButton.addEventListener("click", loadSaveState);
 
 // Construct the universe
 let universe = Universe.new(width, height);
@@ -281,6 +283,8 @@ canvas.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.code === "Space") {
     event.preventDefault();
+    // reset focus
+    if (document.activeElement != document.body) document.activeElement.blur();
     togglePlay();
   }
 
@@ -288,8 +292,16 @@ document.addEventListener("keydown", (event) => {
     stepForward();
   }
 
-  if (event.key === "r") {
-    loadSaveState();
+  if (event.key === "c" && !isControlPressed) {
+    clearBoard();
+  }
+
+  if (event.key === "s" && !isControlPressed) {
+    saveBoard();
+  }
+
+  if (event.key === "r" && !isControlPressed) {
+    loadBoard();
   }
 
   if (event.key === "Control") {
