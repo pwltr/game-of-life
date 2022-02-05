@@ -1,21 +1,14 @@
 # TODO
 
-### Features
-
 - [x] Save / load
 - [x] Keyboard shortcuts
-- [ ] split codebase into modules
 - [x] add performance checks
-- [ ] write more tests
-- [ ] Shortcut tooltip
-- [ ] "What's this?"
-- [ ] Stopwatch / Personal record / Gamify
-- [ ] Toasts / notifcations
 - [x] FPS counter toggle
 - [ ] Board size
+- [ ] "What's this?"
+- [ ] Shortcuts tooltip
+- [ ] Toasts / notifcations
+- [ ] split codebase into modules
+- [ ] write more tests
+- [ ] Stopwatch / Personal record / Gamify
 - [ ] Presets
-
-### Bugs
-
-- [x] Hide / show grid
-
