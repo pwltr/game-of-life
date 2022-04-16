@@ -47,8 +47,8 @@ body {
 }
 
 /* .controls-section:not(:last-child) {
-  border-bottom: 1px solid #0c0c0c;
-} */
+    border-bottom: 1px solid #0c0c0c;
+  } */
 
 .controls .button {
   font-size: 1.2rem;
